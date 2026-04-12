@@ -94,7 +94,7 @@ router.post('/seed', async (req, res) => {
         votes: '210K',
         duration: '3h 05m',
         releaseDate: '2026-10-23',
-        poster: 'https://m.media-amazon.com/images/M/MV5BMmNhNTMwZmMtOTQxZS00MGM3LWJlOTYtMjY4OWQ3MmJhMzFkXkEyXkFqcGc@._V1_.jpg',
+        poster: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSagMRKLXoiDbKGYM2koTUXnvd6ApIs8Hitrw&s',
         backdrop: 'https://m.media-amazon.com/images/M/MV5BOTM2OGY3YzItNTE3My00N2VjLTgwOGEtMjkzN2IwZDdjM2Y1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg',
         description: 'Lord Rama embarks on an epic journey of duty, honor, and sacrifice to rescue Sita and defeat the demon king Ravana, shaping the destiny of dharma.',
         cast: ['Ranbir Kapoor', 'Sai Pallavi', 'Yash', 'Sunny Deol'],

@@ -6,7 +6,7 @@
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20Site-purple?style=for-the-badge&logo=vercel)](https://showmate-sable.vercel.app)
 [![Backend](https://img.shields.io/badge/Backend%20API-Render-blue?style=for-the-badge&logo=render)](https://showmate.onrender.com/api/health)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/YOUR_USERNAME/showmate)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/AdamyaMehta07/showmate)
 
 > A full-stack movie & show ticketing platform inspired by BookMyShow — with a built-in loyalty rewards system. Users earn points on every booking and redeem them for real cashback.
 

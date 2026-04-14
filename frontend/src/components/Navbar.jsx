@@ -119,6 +119,29 @@ const Navbar = () => {
           {/* Right side */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: 'auto' }}>
 
+
+            <a 
+              href="https://ai-movie-recommender-82qif7stgo3war8nj78tsc.streamlit.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+            >
+              <button
+                style={{
+                  background: 'linear-gradient(135deg, var(--purple), var(--gold))',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '7px 14px',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: 600
+                }}
+              >
+                🤖 AI Recommender
+              </button>
+            </a>
+
             {/* Search */}
             {searchOpen ? (
               <form onSubmit={handleSearch} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>

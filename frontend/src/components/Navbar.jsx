@@ -138,7 +138,7 @@ const Navbar = () => {
                   fontWeight: 600
                 }}
               >
-                🤖 AI Recommender
+                AI Recommender
               </button>
             </a>
 

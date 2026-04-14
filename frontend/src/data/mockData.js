@@ -403,7 +403,7 @@ export const movies = [
 
 export const shows = [
   {
-    id: 9,
+    id: 22,
     title: "Mirzapur — Season 2",
     genre: ["Crime", "Thriller", "Drama"],
     language: "Hindi",
@@ -422,7 +422,7 @@ export const shows = [
     trending: true,
   },
   {
-    id: 10,
+    id: 23,
     title: "Stranger Things — Season 5",
     genre: ["Sci-Fi", "Horror", "Thriller"],
     language: "English",

@@ -113,6 +113,25 @@ export const movies = [
     badge: "HIT",
     trending: false,
   },
+   {
+    id: 7,
+    title: "Spider-Man 3",
+    genre: ["Action", "Adventure", "Superhero"],
+    language: "EN",
+    rating: 6.3,
+    votes: "6K",
+    duration: "2h 19m",
+    releaseDate: "2007-05-01",
+    poster: "https://image.tmdb.org/t/p/w500/qFmwhVUoUSXjkKRmca5yGDEXBIj.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg",
+    description: "Peter Parker faces his darkest challenges as the symbiote suit takes over.",
+    cast: ["Tobey Maguire", "Kirsten Dunst", "James Franco"],
+    director: "Sam Raimi",
+    pointsReward: 100,
+    price: { regular: 200, premium: 350, recliner: 550 },
+    badge: "NEW",
+    trending: false
+  },
 ]
 
 export const shows = [

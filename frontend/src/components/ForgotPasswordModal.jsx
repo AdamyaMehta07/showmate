@@ -1,5 +1,8 @@
 // ─── Add this component at the TOP of Auth.jsx (before the Auth function) ────
 
+import { useState } from 'react'
+
+ 
 const ForgotPasswordModal = ({ onClose }) => {
   const [email,   setEmail]   = useState('')
   const [loading, setLoading] = useState(false)
@@ -79,3 +82,5 @@ const ForgotPasswordModal = ({ onClose }) => {
     </div>
   )
 }
+
+export default ForgotPasswordModal;

@@ -1,3 +1,4 @@
+import ForgotPasswordModal from '../components/ForgotPasswordModal'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -10,6 +11,7 @@ const Auth = () => {
   const [loading, setLoading]         = useState(false)
   const [error, setError]             = useState('')
   const [success, setSuccess]         = useState('')
+  const [showForgot, setShowForgot] = useState(false)
 
   const { login, register } = useAuth()
   const navigate = useNavigate()
@@ -159,7 +161,19 @@ const Auth = () => {
 
           {mode === 'login' && (
             <div style={{ textAlign: 'right', marginBottom: '18px' }}>
-              <a href="#" style={{ fontSize: '12px', color: 'var(--purple-light)', textDecoration: 'none' }}>Forgot password?</a>
+              <button
+              onClick={() => setShowForgot(true)}
+              style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '12px',
+              color: 'var(--purple-light)',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-body)',
+              textDecoration: 'underline',
+              }}>
+              Forgot password?
+            </button>
             </div>
           )}
 
@@ -192,6 +206,7 @@ const Auth = () => {
           </p>
         </div>
       </div>
+      {showForgot && <ForgotPasswordModal onClose={() => setShowForgot(false)} />}
     </div>
   )
 }

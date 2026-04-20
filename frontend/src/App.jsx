@@ -1,3 +1,4 @@
+import ResetPassword from './pages/ResetPassword'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
@@ -33,6 +34,7 @@ function App() {
           <Route path="/movies"     element={<Movies />} />
           <Route path="/movie/:id"  element={<MovieDetail />} />
           <Route path="/auth"       element={<Auth />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           {/* Protected routes */}
           <Route path="/booking/:id" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
           <Route path="/profile"     element={<ProtectedRoute><Profile /></ProtectedRoute>} />

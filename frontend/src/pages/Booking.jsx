@@ -48,8 +48,29 @@ const Booking = () => {
   const [step, setStep]                       = useState(1)
   const [selectedSeats, setSelectedSeats]     = useState([])
   const [selectedTheatre, setSelectedTheatre] = useState(theatres[0])
-  const [selectedTime, setSelectedTime]       = useState(theatres[0].times[0])
   const [selectedDate, setSelectedDate]       = useState(0)
+
+  // ── Filter times based on current time (today only) ───────────────────────
+  const getAvailableTimes = (theatreTimes, dateIndex) => {
+    if (dateIndex > 0) return theatreTimes  // future date = all times available
+    const now     = new Date()
+    const nowMins = now.getHours() * 60 + now.getMinutes()
+    return theatreTimes.filter(time => {
+      const [timePart, meridiem] = time.split(' ')
+      const [hoursStr, minsStr]  = timePart.split(':')
+      let hours = parseInt(hoursStr)
+      const mins  = parseInt(minsStr)
+      if (meridiem === 'PM' && hours !== 12) hours += 12
+      if (meridiem === 'AM' && hours === 12) hours = 0
+      const timeMins = hours * 60 + mins
+      return timeMins > nowMins + 30  // 30 min buffer before show
+    })
+  }
+
+  const availableTimes = getAvailableTimes(selectedTheatre.times, selectedDate)
+  const [selectedTime, setSelectedTime] = useState(
+    () => getAvailableTimes(theatres[0].times, 0)[0] || theatres[0].times[0]
+  )
   const [useWallet, setUseWallet]             = useState(false)
   const [paying, setPaying]                   = useState(false)
   const [bookingDone, setBookingDone]         = useState(null)
@@ -305,7 +326,8 @@ const Booking = () => {
                     onChange={e => {
                       const t = theatres.find(x => x.id === parseInt(e.target.value))
                       setSelectedTheatre(t)
-                      setSelectedTime(t.times[0])
+                      const avail = getAvailableTimes(t.times, selectedDate)
+                      setSelectedTime(avail[0] || t.times[0])
                     }}
                     className="input-field" style={{ cursor: 'pointer' }}>
                     {theatres.map(t => <option key={t.id} value={t.id} style={{ background: '#16162a' }}>{t.name} — {t.location}</option>)}
@@ -315,7 +337,11 @@ const Booking = () => {
                   <p style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '6px' }}>Date</p>
                   <div style={{ display: 'flex', gap: '6px', overflowX: 'auto' }}>
                     {dates.slice(0, 5).map((d, i) => (
-                      <button key={i} onClick={() => setSelectedDate(i)} style={{ padding: '6px 10px', borderRadius: '8px', border: '1px solid', borderColor: selectedDate === i ? 'var(--purple-light)' : 'var(--border)', background: selectedDate === i ? 'rgba(139,92,246,0.2)' : 'var(--surface2)', color: selectedDate === i ? 'white' : 'var(--muted)', cursor: 'pointer', textAlign: 'center', flexShrink: 0, fontFamily: 'var(--font-body)' }}>
+                      <button key={i} onClick={() => {
+                        setSelectedDate(i)
+                        const avail = getAvailableTimes(selectedTheatre.times, i)
+                        setSelectedTime(avail[0] || selectedTheatre.times[0])
+                      }} style={{ padding: '6px 10px', borderRadius: '8px', border: '1px solid', borderColor: selectedDate === i ? 'var(--purple-light)' : 'var(--border)', background: selectedDate === i ? 'rgba(139,92,246,0.2)' : 'var(--surface2)', color: selectedDate === i ? 'white' : 'var(--muted)', cursor: 'pointer', textAlign: 'center', flexShrink: 0, fontFamily: 'var(--font-body)' }}>
                         <p style={{ fontSize: '9px', fontWeight: 700 }}>{d.day}</p>
                         <p style={{ fontSize: '16px', fontWeight: 700, lineHeight: 1 }}>{d.date}</p>
                         <p style={{ fontSize: '9px', color: 'var(--muted)' }}>{d.month}</p>
@@ -327,7 +353,11 @@ const Booking = () => {
               <div>
                 <p style={{ fontSize: '11px', color: 'var(--muted)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>Show Time</p>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {selectedTheatre.times.map(time => (
+                  {availableTimes.length === 0 ? (
+                    <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', padding: '10px 16px', fontSize: '13px', color: '#f87171' }}>
+                      ❌ No shows available for today. Please select a future date.
+                    </div>
+                  ) : availableTimes.map(time => (
                     <button key={time} onClick={() => setSelectedTime(time)} style={{ padding: '7px 14px', borderRadius: '8px', border: '1px solid', borderColor: selectedTime === time ? 'var(--purple-light)' : 'var(--border)', background: selectedTime === time ? 'rgba(139,92,246,0.2)' : 'var(--surface2)', color: selectedTime === time ? 'white' : 'var(--muted)', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)' }}>
                       {time}
                     </button>
@@ -511,9 +541,9 @@ const Booking = () => {
             {step === 1 ? (
               <button className="btn-primary"
                 style={{ width: '100%', padding: '13px', fontSize: '14px', opacity: selectedSeats.length === 0 ? 0.5 : 1 }}
-                onClick={() => selectedSeats.length > 0 && setStep(2)}
-                disabled={selectedSeats.length === 0}>
-                Proceed to Pay →
+                onClick={() => selectedSeats.length > 0 && availableTimes.length > 0 && setStep(2)}
+                disabled={selectedSeats.length === 0 || availableTimes.length === 0}>
+                {availableTimes.length === 0 ? '❌ No Shows Today' : 'Proceed to Pay →'}
               </button>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

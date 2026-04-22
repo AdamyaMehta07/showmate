@@ -2,6 +2,24 @@ import { useParams, Link } from 'react-router-dom'
 import { useState } from 'react'
 import { allContent, theatres } from '../data/mockData'
 
+// ─── Filter out past times for today ─────────────────────────────────────────
+const filterAvailableTimes = (times, dateIndex) => {
+  if (dateIndex > 0) return times // future date → show all
+
+  const now = new Date()
+  const nowMins = now.getHours() * 60 + now.getMinutes()
+
+  return times.filter(time => {
+    const [timePart, meridiem] = time.split(' ')
+    const [hoursStr, minsStr] = timePart.split(':')
+    let hours = parseInt(hoursStr)
+    const mins = parseInt(minsStr)
+    if (meridiem === 'PM' && hours !== 12) hours += 12
+    if (meridiem === 'AM' && hours === 12) hours = 0
+    return hours * 60 + mins > nowMins + 30 // 30-min buffer
+  })
+}
+
 const MovieDetail = () => {
   const { id } = useParams()
   const movie = allContent.find(m => m.id === parseInt(id)) || allContent[0]
@@ -154,7 +172,7 @@ const MovieDetail = () => {
               </div>
             )}
 
-            {/* Showtimes */}
+            {/* ── Showtimes ───────────────────────────────────────────────── */}
             {activeTab === 'showtimes' && (
               <div className="fade-up">
                 {/* Date picker */}
@@ -177,36 +195,51 @@ const MovieDetail = () => {
 
                 {/* Theatres */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {theatres.map(theatre => (
-                    <div key={theatre.id} className="glass" style={{ borderRadius: '12px', padding: '20px', border: '1px solid var(--border)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                        <div>
-                          <p style={{ fontSize: '15px', fontWeight: 700, marginBottom: '4px' }}>{theatre.name}</p>
-                          <p style={{ fontSize: '12px', color: 'var(--muted)' }}>📍 {theatre.location}</p>
+                  {theatres.map(theatre => {
+                    // ✅ FIX: filter out past times for today
+                    const availableTimes = filterAvailableTimes(theatre.times, selectedDate)
+
+                    return (
+                      <div key={theatre.id} className="glass" style={{ borderRadius: '12px', padding: '20px', border: '1px solid var(--border)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                          <div>
+                            <p style={{ fontSize: '15px', fontWeight: 700, marginBottom: '4px' }}>{theatre.name}</p>
+                            <p style={{ fontSize: '12px', color: 'var(--muted)' }}>📍 {theatre.location}</p>
+                          </div>
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <span className="tag tag-lang">M-Ticket</span>
+                            {availableTimes.length > 0 && (
+                              <span className="tag" style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)', fontSize: '10px' }}>Available</span>
+                            )}
+                          </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '6px' }}>
-                          <span className="tag tag-lang">M-Ticket</span>
-                          <span className="tag" style={{ background: 'rgba(34,197,94,0.15)', color: '#4ade80', border: '1px solid rgba(34,197,94,0.3)', fontSize: '10px' }}>Available</span>
-                        </div>
+
+                        {/* ✅ Show filtered times or a "no shows" message */}
+                        {availableTimes.length === 0 ? (
+                          <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '8px', padding: '10px 14px' }}>
+                            <p style={{ fontSize: '13px', color: '#f87171' }}>❌ No shows available for today. Please select a future date.</p>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                            {availableTimes.map(time => (
+                              <Link key={time} to={`/booking/${movie.id}`}>
+                                <button style={{
+                                  padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(34,197,94,0.3)',
+                                  background: 'rgba(34,197,94,0.1)', color: '#4ade80',
+                                  fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)',
+                                  transition: 'all 0.2s',
+                                }}
+                                  onMouseEnter={e => { e.target.style.background = 'rgba(34,197,94,0.25)'; e.target.style.transform = 'scale(1.05)' }}
+                                  onMouseLeave={e => { e.target.style.background = 'rgba(34,197,94,0.1)'; e.target.style.transform = 'scale(1)' }}>
+                                  {time}
+                                </button>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                        {theatre.times.map(time => (
-                          <Link key={time} to={`/booking/${movie.id}`}>
-                            <button style={{
-                              padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(34,197,94,0.3)',
-                              background: 'rgba(34,197,94,0.1)', color: '#4ade80',
-                              fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--font-body)',
-                              transition: 'all 0.2s',
-                            }}
-                              onMouseEnter={e => { e.target.style.background = 'rgba(34,197,94,0.25)'; e.target.style.transform = 'scale(1.05)' }}
-                              onMouseLeave={e => { e.target.style.background = 'rgba(34,197,94,0.1)'; e.target.style.transform = 'scale(1)' }}>
-                              {time}
-                            </button>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}
